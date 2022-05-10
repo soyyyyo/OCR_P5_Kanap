@@ -72,6 +72,26 @@ class Cart {
     // ajoute un produit avec la quantité attendue
     add(product) {
         let foundProduct = this.cart.find(p => p.id == product.id);
+        let foundColor = this.cart.includes("cartColor: " + cartColor);
+        console.log(foundColor);
+        if(foundProduct != undefined){ // si on trouve le produit
+            foundProduct.quantity = quantity + foundProduct.quantity;
+            console.log("j'existe déja");
+        } else {
+            product.quantity = quantity; // si le produit n'existe pas, on le crée
+            this.cart.push(product);
+            console.log("je suis nouveau")
+            console.log(foundColor);
+
+        }
+        this.save();
+    }
+
+
+// ORIGINAL ADD PRODUCT
+/*
+  add(product) {
+        let foundProduct = this.cart.find(p => p.id == product.id);
 
         if(foundProduct != undefined) { // si on trouve le produit
             foundProduct.quantity = quantity + foundProduct.quantity;
@@ -82,6 +102,10 @@ class Cart {
         }
         this.save();
     }
+    */
+
+
+
     // supprime un produit, en filtrant tout ce qui n'est pas l'ID
         remove(product){
         this.cart = this.cart.filter(p => p.id != product.id);
