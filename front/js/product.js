@@ -73,7 +73,6 @@ class Cart {
     add(product) {
         let foundProduct = this.cart.find(p => p.id == product.id);
         let foundColor = this.cart.includes("cartColor: " + cartColor);
-        console.log(foundColor);
         if(foundProduct != undefined){ // si on trouve le produit
             foundProduct.quantity = quantity + foundProduct.quantity;
             console.log("j'existe déja");
