@@ -8,7 +8,8 @@ const toColor = document.querySelector("#colors")
 const toQuantity = document.querySelector("#quantity")
 const toAddToCart = document.querySelector("#addToCart")
 
-let thisPage = window.location.href // récupère l'url de la page active
+ // récupère l'url de la page active
+let thisPage = window.location.href
 let url = new URL(thisPage);
 let search_params = new URLSearchParams(url.search);
 
@@ -19,18 +20,8 @@ if(search_params.has('id')) {
   console.log("current product ID: " + pageId);
 }
 
-/* mode haut niveau via GG
-const getProduct = async () => {
-    const response = await fetch("http://localhost:3000/api/products")
-    const data = await response.json();
-    console.log(data);
-}
-const product = getProduct();
-console.log(product);
-*/
 
-
-// version classique OG
+// version function (sans classes)
 function getApi() {
     return fetch("http://localhost:3000/api/products")
     .then(response => response.json());
@@ -45,7 +36,7 @@ getApi()
 
 function displayProduct(products){ // affichage du produit en fonction de son ID
     for(let product of products) {
-        console.log(product);
+        // console.log(product);
         if(pageId === product._id) { // si l'id est égale, on pioche dans les data de la ligne
             toPageTitle.innerHTML = product.name;
             toDescription.innerHTML = product.description;
@@ -59,43 +50,71 @@ function displayProduct(products){ // affichage du produit en fonction de son ID
     }
 }
 
-document // log console pour vérification
+// ajoute le preCart au LocalStorage
+document
 .querySelector("#addToCart")
 .addEventListener("click", addToLocalStorage);
 
-// défini les variables qui seront ajoutés au panier
+// défini les variables qui seront ajoutés au preCart
 let productId = pageId;
 let productColor = "";
 let productQuantity = 0;
 let preCart = []
 
+// supprimer le local storage
+localStorage.clear();
+// valable uniquement pendant les phases de test
+
+
+// event listener des couleurs du produit
 document
     toColor.addEventListener("change", function(e){
         productColor = e.target.value; 
         console.log(productColor);
     })
 
+// event listener des quantités du produit
 document
     toQuantity.addEventListener("change", function(e){
         productQuantity = e.target.value;
         console.log(productQuantity);
     })
 
-
+// cherche à ajouter le produit au local storage
 function addToLocalStorage() {
     let product = {id: productId, color: productColor, quantity: productQuantity};
-    let existingProduct = verifyExistingStorage();
-    console.log("existingProduct", typeof existingProduct.quantity);
-    preCart.push(product);
+    let localCart = verifyExistingStorage();
+    console.log("localCart", localCart);
+    preCart.push(product);   
     console.log("preCart", preCart);
     localStorage.setItem("preCart", JSON.stringify(preCart));
+    
+    
+    let foundProduct = localCart.find(p => p.id == product.id)
+    let foundColor = localCart.find(c => c.color == product.color)
+
+    if(foundProduct.id == product.id){
+        console.log("id identique");
+    } else {
+        console.log("id different");
+    }
 }
 
+
+// récupére le local sto
 function verifyExistingStorage() {
-    const localPreCart = JSON.parse(localStorage.getItem("preCart"));
-    console.log(localPreCart);
-    return localPreCart;
+    let localCart = JSON.parse(localStorage.getItem("preCart"));
+    console.log("local cart", localCart);
+    if(localCart == null){
+    localCart = []
+    } else {
+        return localCart;
+    }
+
 }
+
+
+
 
 verifyExistingStorage();
 

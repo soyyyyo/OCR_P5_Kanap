@@ -72,16 +72,17 @@ class Cart {
     // ajoute un produit avec la quantité attendue
     add(product) {
         let foundProduct = this.cart.find(p => p.id == product.id);
-        let foundColor = this.cart.includes("cartColor: " + cartColor);
-        if(foundProduct != undefined){ // si on trouve le produit
-            foundProduct.quantity = quantity + foundProduct.quantity;
+        let foundColor = this.cart.find(c => c.cartColor == cartColor);
+        console.log("found color", foundColor)
+        console.log("cart color", cartColor)
+        if(foundProduct != undefined && foundColor == cartColor){ // si on trouve le produit
+            foundProduct.quantity = parseInt(quantity) + parseInt(foundProduct.quantity);
             console.log("j'existe déja");
         } else {
             product.quantity = quantity; // si le produit n'existe pas, on le crée
             this.cart.push(product);
             console.log("je suis nouveau")
             console.log(foundColor);
-
         }
         this.save();
     }
