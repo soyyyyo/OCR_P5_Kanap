@@ -9,9 +9,10 @@ document.querySelector(".item").innerHTML += "<h1>erreur 404</h1>";
 console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
 });
 
-let thisPage = window.location.href // récupère l'url de la page active
-let url = new URL(thisPage);
-let search_params = new URLSearchParams(url.search); 
+// récupére l'ID via l'URL de la page
+const thisPage = window.location.href
+const url = new URL(thisPage);
+const search_params = new URLSearchParams(url.search); 
 
 let pageId = "";
 // si l'url a un ID, on le récupère
@@ -56,7 +57,7 @@ localStorage.clear();
 // basket.addBasket({id:"25", price: 19, })
 // basket.removeFromBasket ==> renommer en "remove" etc
 
-// LA MEME ORIENTÉ OBJET
+
 class Cart {
     constructor(){
         let cart = localStorage.getItem("cart"); // get cart
@@ -66,19 +67,24 @@ class Cart {
             this.cart = JSON.parse(cart);
         }
     }
-    save() { // sauvegarde le panier dans Local Storage
+
+    // sauvegarde le panier dans Local Storage
+    save() {
         localStorage.setItem("cart", JSON.stringify(this.cart));
     }
-    // ajoute un produit avec la quantité attendue
+
+    // ajoute un produit en vérifiant dans le local storage si son couple ID/Couleur existe déja
     add(product) {
         const foundProduct = this.cart.find(
             p => p.id === product.id && p.cartColor === cartColor);
         console.log("found product", foundProduct)
 
-        if(foundProduct){ // si on trouve l'ID && Couleur
+        if(foundProduct){
+            // si on trouve l'ID && Couleur
             foundProduct.quantity = parseInt(quantity) + parseInt(foundProduct.quantity);
             console.log("j'existe déja");
         } else {
+            // si l'ID ou Couleur est différent
             product.quantity = quantity; // si le produit n'existe pas, on le crée
             this.cart.push(product);
             console.log("je suis nouveau")
@@ -120,33 +126,29 @@ class Cart {
     }
 }
 
-
-
 // défini les variables qui seront ajoutés au panier
 let id = pageId;
 let cartColor = "";
 let quantity = 0;
-// let preCart = [id, cartColor, quantity];
 let cart = new Cart;
 
-
+// surveille les changements de valeur de la couleur du produit
 document
     toColor.addEventListener("change", function(e){
         cartColor = e.target.value; 
     })
 
+// surveille les changements de valeur de la quantité
 document
     toQuantity.addEventListener("change", function(e){
         quantity = e.target.value;
     })
     
-document // log console pour vérification
+// action à effectuer lors de l'ajout au panier
+document
 .querySelector("#addToCart")
 .addEventListener("click", function() {
-// let preCart = [id + cartColor + quantity]
-// console.log(preCart);
-// console.log(cartColor);
-// console.log(quantity);
+// informe l'utilisateur des conditions à respecter pour valider le panier
 if(cartColor === null || cartColor === "" || quantity === 0 || quantity > 100){
     alert("Veuillez choisir une couleur et une quantité valide.");
 } else
