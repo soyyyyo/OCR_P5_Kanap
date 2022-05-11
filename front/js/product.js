@@ -71,39 +71,20 @@ class Cart {
     }
     // ajoute un produit avec la quantité attendue
     add(product) {
-        let foundProduct = this.cart.find(p => p.id == product.id);
-        let foundColor = this.cart.find(c => c.cartColor == cartColor);
-        console.log("found color", foundColor)
-        console.log("cart color", cartColor)
-        if(foundProduct != undefined && foundColor == cartColor){ // si on trouve le produit
+        const foundProduct = this.cart.find(
+            p => p.id === product.id && p.cartColor === cartColor);
+        console.log("found product", foundProduct)
+
+        if(foundProduct){ // si on trouve l'ID && Couleur
             foundProduct.quantity = parseInt(quantity) + parseInt(foundProduct.quantity);
             console.log("j'existe déja");
         } else {
             product.quantity = quantity; // si le produit n'existe pas, on le crée
             this.cart.push(product);
             console.log("je suis nouveau")
-            console.log(foundColor);
         }
         this.save();
     }
-
-
-// ORIGINAL ADD PRODUCT
-/*
-  add(product) {
-        let foundProduct = this.cart.find(p => p.id == product.id);
-
-        if(foundProduct != undefined) { // si on trouve le produit
-            foundProduct.quantity = quantity + foundProduct.quantity;
-
-        } else {
-            product.quantity = quantity; // si le produit n'existe pas, on le crée
-            this.cart.push(product);
-        }
-        this.save();
-    }
-    */
-
 
 
     // supprime un produit, en filtrant tout ce qui n'est pas l'ID
@@ -152,13 +133,11 @@ let cart = new Cart;
 document
     toColor.addEventListener("change", function(e){
         cartColor = e.target.value; 
-        console.log(cartColor);
     })
 
 document
     toQuantity.addEventListener("change", function(e){
         quantity = e.target.value;
-        console.log(quantity);
     })
     
 document // log console pour vérification
@@ -168,7 +147,7 @@ document // log console pour vérification
 // console.log(preCart);
 // console.log(cartColor);
 // console.log(quantity);
-if(cartColor === null || cartColor === "" || quantity === 0){
+if(cartColor === null || cartColor === "" || quantity === 0 || quantity > 100){
     alert("Veuillez choisir une couleur et une quantité valide.");
 } else
 cart.add({id, cartColor, quantity});
