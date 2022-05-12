@@ -85,7 +85,7 @@ class Cart {
             console.log("j'existe déja");
         } else {
             // si l'ID ou Couleur est différent
-            product.quantity = quantity; // si le produit n'existe pas, on le crée
+            product.quantity = quantity;
             this.cart.push(product);
             console.log("je suis nouveau")
         }
