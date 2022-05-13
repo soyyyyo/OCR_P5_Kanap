@@ -3,7 +3,8 @@ fetch("http://localhost:3000/api/products")
   .then((okData) => {
     // displayProducts(okData); // appel la fonction d'affichage du produit de la page
     detailsOfCart(okData);
-    displayCart()
+    displayCart();
+    // deleteItem();
     // console.table(okData); // affiche les data dans la console sous forme de tableau
   })
   .catch((err) => {
@@ -11,10 +12,11 @@ document.querySelector("#cart__items").innerHTML += "<h1>erreur 404</h1>";
 console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
 });
 
-
 // définition du point d'entrée dans le HTML
 const toCartItem = document.querySelector("#cart__items");
-const toDeleteItem = document.querySelector(".deleteItem");
+// const toDeleteItem = document.querySelector(".deleteItem");
+// const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
+
 
 /*
 Plan de bataille:
@@ -53,7 +55,7 @@ finalCart.forEach(product => {
 function displayCart() {
     finalCart.forEach(product => {
         toCartItem.innerHTML += 
-        `<article class="cart__item" data-id=${product._id} data-color=${product.cartColor}>
+        `<article class="cart__item" data-id=${product.id} data-color=${product.cartColor}>
     <div class="cart__item__img">
     <img src=${product.imageUrl} alt=${product.altTxt}>
     </div>
@@ -77,9 +79,19 @@ function displayCart() {
     });
 }
 
-function deleteItem() {
-document
-    toDeleteItem.addEventListener("click", function(e){
-        console.log("caca boudin");
-    })
-}
+
+// appeler new cart ?
+// function deleteItem() {
+    //     const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
+    //     toDeleteItem.forEach((toDeleteItem) => {
+    //         toDeleteItem.addEventListener("click", () => {
+    //             let producToDelete = toDeleteItem.closest(".cart__item");
+    //             let produtToDeleteId = producToDelete.dataset.id;
+    //             let productToDeeleteColor = producToDelete.dataset.color
+    //             console.log(produtToDeleteId)
+    //             cart.remove({id: produtToDeleteId}, {cartColor: productToDeeleteColor})
+                
+    
+    //         })
+    // })
+    // };

@@ -38,6 +38,42 @@ class Cart {
         this.cart = this.cart.filter(p => p.id != product.id);
         this.save();
     }
+
+
+//////////////////////////////////
+    // supprime un produit, en filtrant tout ce qui n'est pas l'ID
+    // forme a conserver ?   cart.add({id, cartColor, quantity});
+
+        // remove(product){
+        //         // actuel
+        //         console.log("before",this.cart);
+        //         const foundProduct = this.cart.find(
+        //             p => p.id === product.id && p.cartColor === cartColor);
+        //         if(foundProduct){
+        //             foundProduct.delete = "true"
+        //         }
+        //         this.save();
+        
+        
+        // ne fonctionne pas
+        // console.log("before",this.cart);
+        // console.log("selected", this.cart.filter(p => p.id != productId.id && p.cartColor != productColor.cartColor))
+        // this.cart = this.cart.filter(p => p.id != productId.id && p.cartColor != productColor.cartColor);
+        // console.log("after", this.cart);
+        // this.save();
+
+
+        // // complexe
+        // let foundProduct = this.cart.find(
+        // p => p.id === product.id && p.cartColor === cartColor);
+
+        // // old
+        // this.cart = this.cart.filter(p => p.id != product.id);
+        // this.save();
+
+
+
+
     // change la quantité d'un produit
         changeQuantity(product, quantity) {
         let foundProduct = this.cart.find(p => p.id == product.id);
