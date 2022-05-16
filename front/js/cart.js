@@ -4,7 +4,7 @@ fetch("http://localhost:3000/api/products")
     // displayProducts(okData); // appel la fonction d'affichage du produit de la page
     detailsOfCart(okData);
     displayCart();
-    // deleteItem();
+    deleteItem();
     // console.table(okData); // affiche les data dans la console sous forme de tableau
   })
   .catch((err) => {
@@ -79,19 +79,18 @@ function displayCart() {
     });
 }
 
+let cart = new Cart;
+
 
 // appeler new cart ?
-// function deleteItem() {
-    //     const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
-    //     toDeleteItem.forEach((toDeleteItem) => {
-    //         toDeleteItem.addEventListener("click", () => {
-    //             let producToDelete = toDeleteItem.closest(".cart__item");
-    //             let produtToDeleteId = producToDelete.dataset.id;
-    //             let productToDeeleteColor = producToDelete.dataset.color
-    //             console.log(produtToDeleteId)
-    //             cart.remove({id: produtToDeleteId}, {cartColor: productToDeeleteColor})
-                
-    
-    //         })
-    // })
-    // };
+function deleteItem() {
+         const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
+         toDeleteItem.forEach((toDeleteItem) => {
+             toDeleteItem.addEventListener("click", () => {
+                 let producToDelete = toDeleteItem.closest(".cart__item");
+                 let produtToDeleteId = producToDelete.dataset.id;
+                 let productToDeleteColor = producToDelete.dataset.color
+                cart.remove({id: produtToDeleteId}, {cartColor: productToDeleteColor})    
+             })
+     })
+     };

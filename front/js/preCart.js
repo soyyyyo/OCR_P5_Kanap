@@ -44,24 +44,20 @@ class Cart {
     // supprime un produit, en filtrant tout ce qui n'est pas l'ID
     // forme a conserver ?   cart.add({id, cartColor, quantity});
 
-        // remove(product){
-        //         // actuel
-        //         console.log("before",this.cart);
-        //         const foundProduct = this.cart.find(
-        //             p => p.id === product.id && p.cartColor === cartColor);
-        //         if(foundProduct){
-        //             foundProduct.delete = "true"
-        //         }
-        //         this.save();
-        
-        
-        // ne fonctionne pas
-        // console.log("before",this.cart);
-        // console.log("selected", this.cart.filter(p => p.id != productId.id && p.cartColor != productColor.cartColor))
-        // this.cart = this.cart.filter(p => p.id != productId.id && p.cartColor != productColor.cartColor);
-        // console.log("after", this.cart);
-        // this.save();
-
+         remove(productId, cartColor){
+                 const foundProduct = this.cart.find(
+                     p => p.id === productId.id && p.cartColor === cartColor.cartColor);
+                 if(foundProduct){
+                // si on trouve un match, on lui attribue un champ delete, et on filtre pour n'avoir que le reste
+                     foundProduct.delete = true;
+                     this.cart = this.cart.filter(p => p.delete != true);
+                 } else {
+                     console.log("remove function isnt workin properly")
+                 }
+                 // on sauvegarde le nouveau local storage, et rafraichis la page
+                 this.save();
+                 location.reload();
+                }
 
         // // complexe
         // let foundProduct = this.cart.find(
@@ -70,9 +66,6 @@ class Cart {
         // // old
         // this.cart = this.cart.filter(p => p.id != product.id);
         // this.save();
-
-
-
 
     // change la quantité d'un produit
         changeQuantity(product, quantity) {
