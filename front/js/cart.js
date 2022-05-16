@@ -5,6 +5,9 @@ fetch("http://localhost:3000/api/products")
     detailsOfCart(okData);
     displayCart();
     deleteItem();
+    itemQuantity();
+    totalItems();
+    totalPrice();
     // console.table(okData); // affiche les data dans la console sous forme de tableau
   })
   .catch((err) => {
@@ -14,6 +17,9 @@ console.log("erreur 404 via API: " + err); // définition de l'erreur dans la co
 
 // définition du point d'entrée dans le HTML
 const toCartItem = document.querySelector("#cart__items");
+const toTotalQuantity = document.querySelector("#totalQuantity");
+const toTotalPrice = document.querySelector("#totalPrice");
+
 // const toDeleteItem = document.querySelector(".deleteItem");
 // const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
 
@@ -55,14 +61,14 @@ finalCart.forEach(product => {
 function displayCart() {
     finalCart.forEach(product => {
         toCartItem.innerHTML += 
-        `<article class="cart__item" data-id=${product.id} data-color=${product.cartColor}>
+        `<article class="cart__item" data-id=${product.id} data-color=${product.color}>
     <div class="cart__item__img">
     <img src=${product.imageUrl} alt=${product.altTxt}>
     </div>
     <div class="cart__item__content">
     <div class="cart__item__content__description">
         <h2>${product.name}</h2>
-        <p>${product.cartColor}</p>
+        <p>${product.color}</p>
         <p>${product.price}</p>
     </div>
     <div class="cart__item__content__settings">
@@ -90,7 +96,39 @@ function deleteItem() {
                  let producToDelete = toDeleteItem.closest(".cart__item");
                  let produtToDeleteId = producToDelete.dataset.id;
                  let productToDeleteColor = producToDelete.dataset.color
-                cart.remove({id: produtToDeleteId}, {cartColor: productToDeleteColor})    
+                cart.remove({id: produtToDeleteId}, {color: productToDeleteColor})    
              })
      })
      };
+
+function itemQuantity() {
+    const toItemQuantity = document.querySelectorAll(".cart__item .itemQuantity");
+    toItemQuantity.forEach((toItemQuantity) => {
+        toItemQuantity.addEventListener("change", function(e) {
+            let productToModify = toItemQuantity.closest(".cart__item");
+            let productToModifyId = productToModify.dataset.id;
+            let productToModifyColor = productToModify.dataset.color
+            let productToModifyQuantity = e.target.value
+            cart.changeQuantity({id: productToModifyId}, {color: productToModifyColor}, {quantity: productToModifyQuantity})    
+        })
+})
+};
+
+function totalItems() {
+    toTotalQuantity.innerHTML = cart.getTotalProduct();
+}
+
+function totalPrice() {
+    toTotalPrice.innerHTML = cart.getTotalPrice();
+}
+
+
+/// regex
+/*
+field.setCustomValidity() to set the result of the validation:
+an empty string means the constraint is satisfied,
+and any other string means there is an error and this string is the error message to display to the user.
+
+
+
+*/

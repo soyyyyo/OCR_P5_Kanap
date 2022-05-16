@@ -16,7 +16,7 @@ class Cart {
     // ajoute un produit en vérifiant dans le local storage si son couple ID/Couleur existe déja
     add(product) {
         const foundProduct = this.cart.find(
-            p => p.id === product.id && p.cartColor === cartColor);
+            p => p.id === product.id && p.color === color);
         console.log("found product", foundProduct)
 
         if(foundProduct){
@@ -25,28 +25,29 @@ class Cart {
             console.log("j'existe déja");
         } else {
             // si l'ID ou Couleur est différent
-            product.quantity = quantity;
+            product.quantity = parseInt(quantity);
             this.cart.push(product);
             console.log("je suis nouveau")
         }
         this.save();
     }
 
-
+/*
     // supprime un produit, en filtrant tout ce qui n'est pas l'ID
         remove(product){
         this.cart = this.cart.filter(p => p.id != product.id);
         this.save();
     }
+    */
 
 
 //////////////////////////////////
     // supprime un produit, en filtrant tout ce qui n'est pas l'ID
-    // forme a conserver ?   cart.add({id, cartColor, quantity});
+    // forme a conserver ?   cart.add({id, color, quantity});
 
-         remove(productId, cartColor){
+         remove(idInObject, colorInObject){
                  const foundProduct = this.cart.find(
-                     p => p.id === productId.id && p.cartColor === cartColor.cartColor);
+                     p => p.id === idInObject.id && p.color === colorInObject.color);
                  if(foundProduct){
                 // si on trouve un match, on lui attribue un champ delete, et on filtre pour n'avoir que le reste
                      foundProduct.delete = true;
@@ -54,35 +55,38 @@ class Cart {
                  } else {
                      console.log("remove function isnt workin properly")
                  }
-                 // on sauvegarde le nouveau local storage, et rafraichis la page
+                 // on sauvegarde le nouveau local storage, et actualise la page pour rafraichir le display product
                  this.save();
-                 location.reload();
+                 location.reload()
                 }
 
         // // complexe
         // let foundProduct = this.cart.find(
-        // p => p.id === product.id && p.cartColor === cartColor);
+        // p => p.id === product.id && p.color === color);
 
         // // old
         // this.cart = this.cart.filter(p => p.id != product.id);
         // this.save();
 
     // change la quantité d'un produit
-        changeQuantity(product, quantity) {
-        let foundProduct = this.cart.find(p => p.id == product.id);
-        if(foundProduct != undefined) {
-            foundProduct.quantity += quantity
+        changeQuantity(idInObject, colorInObject, quantityInObject) {
+            const foundProduct = this.cart.find(
+            p => p.id === idInObject.id && p.color === colorInObject.color);
+            if(foundProduct) {
+            foundProduct.quantity = quantityInObject.quantity
             if(foundProduct.quantity <= 0) {
                 this.remove(foundProduct);
             } else {
+            totalItems();
+            totalPrice();
             this.save();
         }
         }
     }
-        getNumberProduct(){
+        getTotalProduct(){
         let number = 0;
         for(let product of this.cart){
-            number += product.quantity;
+            number += parseInt(product.quantity);
         } 
         return number;
     }
@@ -91,7 +95,7 @@ class Cart {
         for(let product of this.cart){
             total += product.quantity * product.price;
         } 
-        return number;
+        return total;
     }
 }
 

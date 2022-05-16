@@ -31,6 +31,12 @@ const toColor = document.querySelector("#colors")
 const toQuantity = document.querySelector("#quantity")
 const toAddToCart = document.querySelector("#addToCart")
 
+// défini les variables qui seront ajoutés au panier
+let id = pageId;
+let color = "";
+let quantity = 0;
+let cart = new Cart;
+let price = 0;
 
 displayProducts = (products) => { // affichage du produit en fonction de son ID
     for(let product of products) {
@@ -43,6 +49,7 @@ displayProducts = (products) => { // affichage du produit en fonction de son ID
         for(let i = 0; i < product.colors.length; i++) { // tant qu'il y a des couleurs, on les rajoute
         toColor.innerHTML += `<option value="${product.colors[i]}">${product.colors[i]}</option>;`
         }
+        price = product.price
         }
     }
 }
@@ -57,20 +64,14 @@ displayProducts = (products) => { // affichage du produit en fonction de son ID
 // basket.addBasket({id:"25", price: 19, })
 // basket.removeFromBasket ==> renommer en "remove" etc
 
-////// le precart allait ici
 
-// défini les variables qui seront ajoutés au panier
-let id = pageId;
-let cartColor = "";
-let quantity = 0;
-let cart = new Cart;
 
 // let cart = new Cart;
 
 // surveille les changements de valeur de la couleur du produit
 document
     toColor.addEventListener("change", function(e){
-        cartColor = e.target.value; 
+        color = e.target.value; 
     })
 
 // surveille les changements de valeur de la quantité
@@ -78,14 +79,15 @@ document
     toQuantity.addEventListener("change", function(e){
         quantity = e.target.value;
     })
+
     
 // action à effectuer lors de l'ajout au panier
 document
 .querySelector("#addToCart")
 .addEventListener("click", function() {
 // informe l'utilisateur des conditions à respecter pour valider le panier
-if(cartColor === null || cartColor === "" || quantity === 0 || quantity > 100){
+if(color === null || color === "" || quantity === 0 || quantity > 100){
     alert("Veuillez choisir une couleur et une quantité valide.");
 } else
-cart.add({id, cartColor, quantity});
+cart.add({id, color, quantity, price});
 })
