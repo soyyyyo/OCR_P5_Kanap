@@ -16,26 +16,22 @@ console.log("erreur 404 via API: " + err); // définition de l'erreur dans la co
 });
 
 // définition du point d'entrée dans le HTML
+// product
 const toCartItem = document.querySelector("#cart__items");
 const toTotalQuantity = document.querySelector("#totalQuantity");
 const toTotalPrice = document.querySelector("#totalPrice");
+// form
+const toFirstName = document.querySelector("#firstName")
+const toLastName = document.querySelector("#lastName")
+const toAdress = document.querySelector("#address")
+const toCity = document.querySelector("#city")
+const toEmail = document.querySelector("#email")
+const toOrder = document.querySelector("#order")
+
 
 // const toDeleteItem = document.querySelector(".deleteItem");
 // const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
 
-
-/*
-Plan de bataille:
-- récupérer API
-- récupérer local storage => variable array
-- croiser les deux pour récupérer total data
-- insérer les data dans le html
-- event listener sur quantity
-- event listener sur supprimer
-- mise à jour du total
-
-
-*/
 
 
 // on récupére les détails de chaque produit dans une variable finalCart
@@ -128,7 +124,99 @@ function totalPrice() {
 field.setCustomValidity() to set the result of the validation:
 an empty string means the constraint is satisfied,
 and any other string means there is an error and this string is the error message to display to the user.
-
-
-
 */
+
+/*
+toFirstName
+toLastName
+toAdress
+toCity
+toEmail
+toOrder
+*/
+
+
+// regexp pour des lettres uniquement
+function validateNames(value) {
+    const minRegexp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
+    const valid = minRegexp.test(value);
+	return valid;
+}
+
+// http://emailregex.com/
+function validateEmail(value) {
+    const emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const valid = emailRegexp.test(value);
+    return valid;
+}
+
+// regex pour l'adresse en lettre/chiffre/tiret uniquement jusqu'à 100 caractères
+function validateAdress(value) {
+    const adressRegexp = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{10,100}$/i;
+    const valid = adressRegexp.test(value);
+    return valid;
+}
+
+
+// let firstName = "";
+// let lastName = "";
+// let adress = "";
+// let city = "";
+// let email = "";
+
+let globalContact = {firstName: "", lastName: "", adress: "", city: "", email: ""};
+
+const noErrorToDisplay = null;
+
+let textError = false;
+const textErrorOutput = "Seules les lettres et tirets sont autorisés."
+
+let adressError = false;
+const adressErrorOutput = "Votre adresse semble invalide, certains caractéres spéciaux ne sont pas autorisés."
+
+let emailError = false;
+const emailErrorOutput = "Veuillez rentrer une adresse mail valide."
+
+
+
+
+
+
+toFirstName.addEventListener("change", function(e) {
+   if(validateNames(e.target.value)){
+    globalContact.firstName = e.target.value;
+    textError = false
+   } else {
+    textError = true;
+   }
+   displayError("firstName", "text", textError);
+})
+
+
+function displayError(value, option, error){
+    if(textError === true){
+        document.querySelector("#"+value+"ErrorMsg").innerHTML = textErrorOutput;
+    } else {
+        document.querySelector("#"+value+"ErrorMsg").innerHTML = noErrorToDisplay;
+    }
+    }
+
+
+
+
+
+///////
+
+toLastName.addEventListener("change", function(e) {
+   lastName = e.target.value;
+})
+toAdress.addEventListener("change", function(e) {
+    adress = e.target.value;
+})
+toCity.addEventListener("change", function(e) {
+    city= e.target.value;
+})
+toEmail.addEventListener("change", function(e) {
+    email = e.target.value;
+})
+
