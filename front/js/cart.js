@@ -23,7 +23,7 @@ const toTotalPrice = document.querySelector("#totalPrice");
 // form
 const toFirstName = document.querySelector("#firstName")
 const toLastName = document.querySelector("#lastName")
-const toAdress = document.querySelector("#address")
+const toAddress = document.querySelector("#address")
 const toCity = document.querySelector("#city")
 const toEmail = document.querySelector("#email")
 const toOrder = document.querySelector("#order")
@@ -126,16 +126,14 @@ an empty string means the constraint is satisfied,
 and any other string means there is an error and this string is the error message to display to the user.
 */
 
+
+
+
+
+
+
+
 /*
-toFirstName
-toLastName
-toAdress
-toCity
-toEmail
-toOrder
-*/
-
-
 // regexp pour des lettres uniquement
 function validateText(value) {
     const minRegexp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
@@ -150,37 +148,59 @@ function validateEmail(value) {
     return valid;
 }
 
-// regex pour l'adresse en lettre/chiffre/tiret uniquement jusqu'à 100 caractères
-function validateAdress(value) {
-    const adressRegexp = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{10,100}$/i;
-    const valid = adressRegexp.test(value);
+// regex pour l'addresse en lettre/chiffre/tiret uniquement jusqu'à 100 caractères
+function validateAddress(value) {
+    const addressRegexp = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{10,100}$/i;
+    const valid = addressRegexp.test(value);
     return valid;
+}
+*/
+
+
+
+
+
+
+// tout en un
+function validateRegex(value, type) {
+    if(type === "text") {
+        const minRegexp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
+        const valid = minRegexp.test(value);
+        return valid;
+    } if(type === "email") {
+        const emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const valid = emailRegexp.test(value);
+        return valid;
+    } if(type === "address") {
+        const addressRegexp = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{5,100}$/i;
+        const valid = addressRegexp.test(value);
+        return valid;
+    }
 }
 
 
-// let firstName = "";
-// let lastName = "";
-// let adress = "";
-// let city = "";
-// let email = "";
 
-let globalContact = {firstName: "", lastName: "", adress: "", city: "", email: ""};
+// défini les infos de contact globales qui seront importés plus tard dans le local storage
+let globalContact = {firstName: "", lastName: "", address: "", city: "", email: ""};
 
-const noErrorToDisplay = null;
 
+// liste des messages d'erreurs
 let textError = false;
 const textErrorOutput = "Seules les lettres et tirets sont autorisés."
-
-let adressError = false;
-const adressErrorOutput = "Votre adresse semble invalide, certains caractéres spéciaux ne sont pas autorisés."
-
+let addressError = false;
+const addressErrorOutput = "Votre addresse semble incompléte ou invalide"
 let emailError = false;
-const emailErrorOutput = "Veuillez rentrer une adresse mail valide."
+const emailErrorOutput = "Veuillez rentrer une addresse email valide."
+const noErrorToDisplay = null;
+
+
+// on compte le nombre d'erreurs avant de pouvoir soummettre le formulaire
+let errorCount = 0;
 
 
 toFirstName.addEventListener("change", function(e) {
     let errorValue = false
-   if(validateText(e.target.value)){
+   if(validateRegex(e.target.value, "text")){
     globalContact.firstName = e.target.value;
     errorValue = false
    } else {
@@ -189,10 +209,43 @@ toFirstName.addEventListener("change", function(e) {
    displayError("firstName", textErrorOutput, errorValue);
 })
 
+toLastName.addEventListener("change", function(e) {
+    let errorValue = false
+   if(validateRegex(e.target.value, "text")){
+    globalContact.lastName = e.target.value;
+    errorValue = false
+   } else {
+    errorValue = true;
+   }
+   displayError("lastName", textErrorOutput, errorValue);
+})
+
+toAddress.addEventListener("change", function(e) {
+    let errorValue = false
+   if(validateRegex(e.target.value, "address")){
+    globalContact.lastName = e.target.value;
+    errorValue = false
+   } else {
+    errorValue = true;
+   }
+   displayError("address", addressErrorOutput, errorValue);
+})
+
+toCity.addEventListener("change", function(e) {
+    let errorValue = false
+   if(validateRegex(e.target.value, "text")){
+    globalContact.lastName = e.target.value;
+    errorValue = false
+   } else {
+    errorValue = true;
+   }
+   displayError("city", textErrorOutput, errorValue);
+})
+
 
 toEmail.addEventListener("change", function(e) {
     let errorValue = false
-   if(validateEmail(e.target.value)){
+   if(validateRegex(e.target.value, "email")){
     globalContact.email = e.target.value;
     errorValue = false
    } else {
@@ -201,8 +254,16 @@ toEmail.addEventListener("change", function(e) {
    displayError("email", emailErrorOutput, errorValue);
 })
 
+toOrder.addEventListener("click", function(){
+    console.log(globalContact)
+    // globalContact.forEach(element => {
+    //     console.log(element);
+    // });
+}) 
 
 
+
+// défini si on affiche ou non un message d'erreur
 function displayError(queryLocation, errorKind, errorValue){
     if(errorValue === true){
         document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = errorKind;
@@ -210,23 +271,3 @@ function displayError(queryLocation, errorKind, errorValue){
         document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
     }
     }
-
-
-
-
-
-///////
-
-toLastName.addEventListener("change", function(e) {
-   lastName = e.target.value;
-})
-toAdress.addEventListener("change", function(e) {
-    adress = e.target.value;
-})
-toCity.addEventListener("change", function(e) {
-    city= e.target.value;
-})
-toEmail.addEventListener("change", function(e) {
-    email = e.target.value;
-})
-
