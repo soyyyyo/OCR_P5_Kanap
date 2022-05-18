@@ -137,7 +137,7 @@ toOrder
 
 
 // regexp pour des lettres uniquement
-function validateNames(value) {
+function validateText(value) {
     const minRegexp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
     const valid = minRegexp.test(value);
 	return valid;
@@ -178,26 +178,36 @@ let emailError = false;
 const emailErrorOutput = "Veuillez rentrer une adresse mail valide."
 
 
-
-
-
-
 toFirstName.addEventListener("change", function(e) {
-   if(validateNames(e.target.value)){
+    let errorValue = false
+   if(validateText(e.target.value)){
     globalContact.firstName = e.target.value;
-    textError = false
+    errorValue = false
    } else {
-    textError = true;
+    errorValue = true;
    }
-   displayError("firstName", "text", textError);
+   displayError("firstName", textErrorOutput, errorValue);
 })
 
 
-function displayError(value, option, error){
-    if(textError === true){
-        document.querySelector("#"+value+"ErrorMsg").innerHTML = textErrorOutput;
+toEmail.addEventListener("change", function(e) {
+    let errorValue = false
+   if(validateEmail(e.target.value)){
+    globalContact.email = e.target.value;
+    errorValue = false
+   } else {
+    errorValue = true;
+   }
+   displayError("email", emailErrorOutput, errorValue);
+})
+
+
+
+function displayError(queryLocation, errorKind, errorValue){
+    if(errorValue === true){
+        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = errorKind;
     } else {
-        document.querySelector("#"+value+"ErrorMsg").innerHTML = noErrorToDisplay;
+        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
     }
     }
 
