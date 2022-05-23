@@ -8,6 +8,7 @@ fetch("http://localhost:3000/api/products")
     itemQuantity();
     totalItems();
     totalPrice();
+    formValidation();
     // console.table(okData); // affiche les data dans la console sous forme de tableau
   })
   .catch((err) => {
@@ -15,23 +16,19 @@ document.querySelector("#cart__items").innerHTML += "<h1>erreur 404</h1>";
 console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
 });
 
+
 // définition du point d'entrée dans le HTML
 // product
 const toCartItem = document.querySelector("#cart__items");
 const toTotalQuantity = document.querySelector("#totalQuantity");
 const toTotalPrice = document.querySelector("#totalPrice");
 // form
-const toFirstName = document.querySelector("#firstName")
-const toLastName = document.querySelector("#lastName")
-const toAddress = document.querySelector("#address")
-const toCity = document.querySelector("#city")
-const toEmail = document.querySelector("#email")
+const firstName = document.querySelector("#firstName")
+const lastName = document.querySelector("#lastName")
+const address = document.querySelector("#address")
+const city = document.querySelector("#city")
+const email = document.querySelector("#email")
 const toOrder = document.querySelector("#order")
-
-
-// const toDeleteItem = document.querySelector(".deleteItem");
-// const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
-
 
 
 // on récupére les détails de chaque produit dans une variable finalCart
@@ -47,12 +44,13 @@ finalCart.forEach(product => {
         product.description = foundProduct.description;
         product.altTxt = foundProduct.altTxt;
     } else {
-        console.log("nothing was founded");
+        console.log("nothing was found");
     }
 });
     console.log("final cart", finalCart);
     return finalCart;
 }
+
 
 function displayCart() {
     finalCart.forEach(product => {
@@ -84,6 +82,7 @@ function displayCart() {
 let cart = new Cart;
 
 
+
 // appeler new cart ?
 function deleteItem() {
          const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
@@ -110,6 +109,7 @@ function itemQuantity() {
 })
 };
 
+
 function totalItems() {
     toTotalQuantity.innerHTML = cart.getTotalProduct();
 }
@@ -117,48 +117,6 @@ function totalItems() {
 function totalPrice() {
     toTotalPrice.innerHTML = cart.getTotalPrice();
 }
-
-
-/// regex
-/*
-field.setCustomValidity() to set the result of the validation:
-an empty string means the constraint is satisfied,
-and any other string means there is an error and this string is the error message to display to the user.
-*/
-
-
-
-
-
-
-
-
-/*
-// regexp pour des lettres uniquement
-function validateText(value) {
-    const minRegexp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
-    const valid = minRegexp.test(value);
-	return valid;
-}
-
-// http://emailregex.com/
-function validateEmail(value) {
-    const emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const valid = emailRegexp.test(value);
-    return valid;
-}
-
-// regex pour l'addresse en lettre/chiffre/tiret uniquement jusqu'à 100 caractères
-function validateAddress(value) {
-    const addressRegexp = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{10,100}$/i;
-    const valid = addressRegexp.test(value);
-    return valid;
-}
-*/
-
-
-
-
 
 
 // tout en un
@@ -178,8 +136,6 @@ function validateRegex(value, type) {
     }
 }
 
-
-
 // défini les infos de contact globales qui seront importés plus tard dans le local storage
 let globalContact = {firstName: "", lastName: "", address: "", city: "", email: ""};
 
@@ -192,12 +148,83 @@ const addressErrorOutput = "Votre addresse semble incompléte ou invalide"
 let emailError = false;
 const emailErrorOutput = "Veuillez rentrer une addresse email valide."
 const noErrorToDisplay = null;
+// rajouter erreur par champs : ex: prenom incorrect, nom de famille incorrect
 
 
-// on compte le nombre d'erreurs avant de pouvoir soummettre le formulaire
-let errorCount = 0;
+
+formFields = [firstName, lastName, address, city, email]
+fieldType = ["text", "text", "address", "text", "email"]
 
 
+function formValidation() {
+for (let i = 0; i < formFields.length; i++) {
+    let errorValue = false
+    let globalContactKey = formFields[i].name;
+    formFields[i].addEventListener("change", function(e) {
+        if(validateRegex(e.target.value, fieldType[i])) {
+            globalContact[globalContactKey] = e.target.value;
+            errorValue = false
+        } else {
+            errorValue = true
+        }
+        displayError(formFields[i].name, fieldType[i], errorValue);
+        console.log(formFields[i].name, fieldType[i], errorValue);
+        
+    })
+    
+}
+}
+
+
+toOrder.addEventListener("click", function(){
+    console.log(globalContact)
+}) 
+
+
+// défini si on affiche ou non un message d'erreur
+function displayError(queryLocation, errorKind, errorValue){
+    let errorOnDisplay;
+    if(errorValue === true){
+        if(errorKind === "text") {
+            errorOnDisplay = textErrorOutput;
+        }
+        if(errorKind === "address") {
+            errorOnDisplay = addressErrorOutput;
+        }
+        if(errorKind === "email") {
+            errorOnDisplay = emailErrorOutput;
+        }
+        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = errorOnDisplay;
+    } else {
+        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
+    }
+    }
+
+
+
+toOrder.addEventListener("click", function(){
+
+
+})
+
+/*
+query selector => 
+une classe regex sur chaque form
+
+for each .regexApproprié
+check regex et message d'erreur
+if valid = push to globalContact
+if !valid = error msg
+
+*/
+
+
+
+
+// essayer avec [0] [1]
+
+
+/*
 toFirstName.addEventListener("change", function(e) {
     let errorValue = false
    if(validateRegex(e.target.value, "text")){
@@ -208,66 +235,4 @@ toFirstName.addEventListener("change", function(e) {
    }
    displayError("firstName", textErrorOutput, errorValue);
 })
-
-toLastName.addEventListener("change", function(e) {
-    let errorValue = false
-   if(validateRegex(e.target.value, "text")){
-    globalContact.lastName = e.target.value;
-    errorValue = false
-   } else {
-    errorValue = true;
-   }
-   displayError("lastName", textErrorOutput, errorValue);
-})
-
-toAddress.addEventListener("change", function(e) {
-    let errorValue = false
-   if(validateRegex(e.target.value, "address")){
-    globalContact.lastName = e.target.value;
-    errorValue = false
-   } else {
-    errorValue = true;
-   }
-   displayError("address", addressErrorOutput, errorValue);
-})
-
-toCity.addEventListener("change", function(e) {
-    let errorValue = false
-   if(validateRegex(e.target.value, "text")){
-    globalContact.lastName = e.target.value;
-    errorValue = false
-   } else {
-    errorValue = true;
-   }
-   displayError("city", textErrorOutput, errorValue);
-})
-
-
-toEmail.addEventListener("change", function(e) {
-    let errorValue = false
-   if(validateRegex(e.target.value, "email")){
-    globalContact.email = e.target.value;
-    errorValue = false
-   } else {
-    errorValue = true;
-   }
-   displayError("email", emailErrorOutput, errorValue);
-})
-
-toOrder.addEventListener("click", function(){
-    console.log(globalContact)
-    // globalContact.forEach(element => {
-    //     console.log(element);
-    // });
-}) 
-
-
-
-// défini si on affiche ou non un message d'erreur
-function displayError(queryLocation, errorKind, errorValue){
-    if(errorValue === true){
-        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = errorKind;
-    } else {
-        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
-    }
-    }
+*/
