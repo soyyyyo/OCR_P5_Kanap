@@ -28,14 +28,15 @@ const lastName = document.querySelector("#lastName")
 const address = document.querySelector("#address")
 const city = document.querySelector("#city")
 const email = document.querySelector("#email")
+// validation
 const toOrder = document.querySelector("#order")
 
 
-// on récupére les détails de chaque produit dans une variable finalCart
+// on récupére les détails de chaque produit dans une variable finalCartObject
 function detailsOfCart(data) {
 let localStorageCart = localStorage.getItem("cart"); // get cart de local storage
-finalCart = JSON.parse(localStorageCart)
-finalCart.forEach(product => {
+finalCartObject = JSON.parse(localStorageCart)
+finalCartObject.forEach(product => {
     const foundProduct = data.find(p => p._id === product.id);
     if(foundProduct) {
         product.name = foundProduct.name;
@@ -44,16 +45,16 @@ finalCart.forEach(product => {
         product.description = foundProduct.description;
         product.altTxt = foundProduct.altTxt;
     } else {
-        console.log("nothing was found");
+        console.log("No product found to be displayed");
     }
 });
-    console.log("final cart", finalCart);
-    return finalCart;
+    console.log("final cart", finalCartObject);
+    return finalCartObject;
 }
 
 
 function displayCart() {
-    finalCart.forEach(product => {
+    finalCartObject.forEach(product => {
         toCartItem.innerHTML += 
         `<article class="cart__item" data-id=${product.id} data-color=${product.color}>
     <div class="cart__item__img">
@@ -152,8 +153,9 @@ const noErrorToDisplay = null;
 
 
 
-formFields = [firstName, lastName, address, city, email]
-fieldType = ["text", "text", "address", "text", "email"]
+const formFields = [firstName, lastName, address, city, email]
+const fieldType = ["text", "text", "address", "text", "email"]
+let errorCount = [];
 
 
 function formValidation() {
@@ -163,22 +165,17 @@ for (let i = 0; i < formFields.length; i++) {
     formFields[i].addEventListener("change", function(e) {
         if(validateRegex(e.target.value, fieldType[i])) {
             globalContact[globalContactKey] = e.target.value;
-            errorValue = false
+            errorValue = false;
+            errorCount[i] = 0;
         } else {
             errorValue = true
+            errorCount[i] = 1;
         }
         displayError(formFields[i].name, fieldType[i], errorValue);
         console.log(formFields[i].name, fieldType[i], errorValue);
-        
     })
-    
 }
 }
-
-
-toOrder.addEventListener("click", function(){
-    console.log(globalContact)
-}) 
 
 
 // défini si on affiche ou non un message d'erreur
@@ -200,21 +197,81 @@ function displayError(queryLocation, errorKind, errorValue){
     }
     }
 
+let finalCartArray = [];
+
+function cartConvertToArray(object, array) {
+object.forEach(item => {
+    array.push(item.id)
+});}
 
 
 toOrder.addEventListener("click", function(){
-
-
+    console.log("errorCount", errorCount);
+    console.log("globalContact", globalContact)
+    if(
+        errorCount.reduce((previousValue, currentValue) => previousValue + currentValue, 0) === 0 &&
+        finalCartObject.length > 0 &&
+        globalContact.firstName != "" &&
+        globalContact.lastName != "" &&
+        globalContact.address != "" &&
+        globalContact.city != "" &&
+        globalContact.email != ""
+    ) {
+        event.preventDefault();
+        console.log("ORDER IZ GREAT SUCCESS")
+        sendOrder();
+    } else {
+        event.preventDefault();
+        console.log("SOMETHING WENT WRONG")
+    }
+    cartConvertToArray(finalCartObject, finalCartArray);
+    console.log(finalCartArray);
 })
 
-/*
-query selector => 
-une classe regex sur chaque form
 
-for each .regexApproprié
-check regex et message d'erreur
-if valid = push to globalContact
-if !valid = error msg
+///////
+
+function sendOrder() {
+const orderData = {
+    contact: globalContact,
+    products: finalCartArray
+}
+
+// Envoi de l'objet orderData à l'API
+const sendOrder = {
+    method: "POST",
+    headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json", 
+    },
+    body: JSON.stringify(orderData)
+};
+
+fetch("http://localhost:3000/api/products/order", sendOrder)
+.then(
+    async (response) => {
+        try {
+            if(response.ok) {
+                const data = await response.json();
+                // Réponse envoyée par l'API contenant l'orderId
+                console.log(data);
+                // Redirection vers la page Confirmation
+                window.location.href = `confirmation.html?order=${data.orderId}`;
+            }
+        }
+        catch(error) {
+            alert("Le serveur ne répond pas. Si le problème persiste, contactez-nous");
+        };
+    }
+)
+}
+
+
+
+
+
+/*
+
 
 */
 
