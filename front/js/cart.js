@@ -130,14 +130,17 @@ function totalPrice() {
 
 // défini les différentes Regex qui seront à prendre en compte suivant le type de champ du formulaire
 function validateRegex(value, type) {
+    // Type texte: lettres et accents uniquements, jusqu'à 31 caractéres
     if(type === "text") {
         const minRegexp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
         const valid = minRegexp.test(value);
         return valid;
+    // Type email: vérifie le @, une extension de domaine, le double point etc...
     } if(type === "email") {
         const emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const valid = emailRegexp.test(value);
         return valid;
+    // Type adresse: lettres, accents et chiffres autorisés, entre 5 et 100 caractéres
     } if(type === "address") {
         const addressRegexp = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{5,100}$/i;
         const valid = addressRegexp.test(value);
@@ -147,17 +150,6 @@ function validateRegex(value, type) {
 
 // défini les infos de contact globales qui seront nécessaire à l'envoi de la commande à l'API
 let globalContact = {firstName: "", lastName: "", address: "", city: "", email: ""};
-
-
-// liste des messages d'erreurs à insérer dans le HTML en cas d'erreur de Regex
-let textError = false;
-const textErrorOutput = "Seules les lettres et tirets sont autorisés."
-let addressError = false;
-const addressErrorOutput = "Votre addresse semble incompléte ou invalide"
-let emailError = false;
-const emailErrorOutput = "Veuillez rentrer une addresse email valide."
-const noErrorToDisplay = null;
-// rajouter erreur par champs : ex: prenom incorrect, nom de famille incorrect
 
 
 // défini les champs du formulaire
@@ -189,7 +181,57 @@ for (let i = 0; i < formFields.length; i++) {
 }
 }
 
+// liste des messages d'erreurs à insérer dans le HTML en cas d'erreur de Regex
+let textError = false;
+const textErrorOutput = "Seules les lettres et tirets sont autorisés."
+let addressError = false;
+const addressErrorOutput = "Votre addresse semble incompléte ou invalide"
+let emailError = false;
+const emailErrorOutput = "Veuillez rentrer une addresse email valide."
+const noErrorToDisplay = null;
+// rajouter erreur par champs : ex: prenom incorrect, nom de famille incorrect
 
+
+// défini si on affiche ou non un message d'erreur en fonction de la valeur d'errorValue
+function displayError(queryLocation, errorKind, errorValue){
+    let errorOnDisplay;
+    let keyWord;
+    if(errorValue === true){
+        if(errorKind === "text") {
+            errorOnDisplay = textErrorOutput;
+        }
+        if(errorKind === "address") {
+            errorOnDisplay = addressErrorOutput;
+        }
+        if(errorKind === "email") {
+            errorOnDisplay = emailErrorOutput;
+        }
+
+        switch (queryLocation) {
+            case 'firstName':
+              keyWord = "prénom";
+              break;
+              case 'lastName':
+                  keyWord = "nom de famille";
+                  break;
+                  case 'adress':
+                      keyWord = "adresse";
+                      break;
+                      case 'city':
+                          keyWord = "ville";
+                          break;
+                          case 'email':
+                              keyWord = "adresse email";
+                              break;
+          }
+        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = `Etes vous certain.e.s de votre ${keyWord} ?` + " " + errorOnDisplay;
+    } else {
+        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
+    }
+    }
+    
+    // version fonctionnelle 3 messaes d'erreurs seulement
+/*
 // défini si on affiche ou non un message d'erreur en fonction de la valeur d'errorValue
 function displayError(queryLocation, errorKind, errorValue){
     let errorOnDisplay;
@@ -208,6 +250,7 @@ function displayError(queryLocation, errorKind, errorValue){
         document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
     }
     }
+*/
 
 let finalCartArray = [];
 
