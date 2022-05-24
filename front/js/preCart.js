@@ -32,19 +32,6 @@ class Cart {
         this.save();
     }
 
-/*
-    // supprime un produit, en filtrant tout ce qui n'est pas l'ID
-        remove(product){
-        this.cart = this.cart.filter(p => p.id != product.id);
-        this.save();
-    }
-    */
-
-
-//////////////////////////////////
-    // supprime un produit, en filtrant tout ce qui n'est pas l'ID
-    // forme a conserver ?   cart.add({id, color, quantity});
-
          remove(idInObject, colorInObject){
                  const foundProduct = this.cart.find(
                      p => p.id === idInObject.id && p.color === colorInObject.color);
@@ -60,14 +47,6 @@ class Cart {
                  location.reload()
                 }
 
-        // // complexe
-        // let foundProduct = this.cart.find(
-        // p => p.id === product.id && p.color === color);
-
-        // // old
-        // this.cart = this.cart.filter(p => p.id != product.id);
-        // this.save();
-
     // change la quantité d'un produit
         changeQuantity(idInObject, colorInObject, quantityInObject) {
             const foundProduct = this.cart.find(
@@ -77,12 +56,13 @@ class Cart {
             if(foundProduct.quantity <= 0) {
                 this.remove(foundProduct);
             } else {
-            totalItems();
-            totalPrice();
             this.save();
         }
+        detailsOfCart(fetchedData)
+        totalPrice();
         }
     }
+        // calcule le nombre de produit dans le panier depuis le local storage
         getTotalProduct(){
         let number = 0;
         for(let product of this.cart){
@@ -90,14 +70,20 @@ class Cart {
         } 
         return number;
     }
-        getTotalPrice(){
+        // calcule le montant total du panier depuis un panier défini.
+        getTotalPrice(cartToAnalyse){
+        let total = 0;
+        for(let product of cartToAnalyse){
+            total += product.quantity * product.price;
+        } 
+        return total;
+
+/*
         let total = 0;
         for(let product of this.cart){
             total += product.quantity * product.price;
         } 
         return total;
+*/
     }
 }
-
-// let cart = new Cart;
-

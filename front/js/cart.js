@@ -1,7 +1,12 @@
+// sauvegardera le fetch des datas de l'API pour ne pas la rappeler à chaque modifications du panier.
+let fetchedData;
+
 fetch("http://localhost:3000/api/products")
   .then((rawData) => rawData.json()) // converti les data pour être lus
   .then((okData) => {
+    fetchedData = okData
     // displayProducts(okData); // appel la fonction d'affichage du produit de la page
+    console.table(okData);
     detailsOfCart(okData);
     displayCart();
     deleteItem();
@@ -17,25 +22,26 @@ console.log("erreur 404 via API: " + err); // définition de l'erreur dans la co
 });
 
 
-// définition du point d'entrée dans le HTML
-// product
+// définition des points d'entrées dans le HTML
+// cartes produits, quantité total, et prix total
 const toCartItem = document.querySelector("#cart__items");
 const toTotalQuantity = document.querySelector("#totalQuantity");
 const toTotalPrice = document.querySelector("#totalPrice");
-// form
+// champs du formulaire
 const firstName = document.querySelector("#firstName")
 const lastName = document.querySelector("#lastName")
 const address = document.querySelector("#address")
 const city = document.querySelector("#city")
 const email = document.querySelector("#email")
-// validation
+// bouton de validation de la commande
 const toOrder = document.querySelector("#order")
 
 
-// on récupére les détails de chaque produit dans une variable finalCartObject
+
+// on récupére les détails de chaque produit dans une variable objet finalCartObject
 function detailsOfCart(data) {
-let localStorageCart = localStorage.getItem("cart"); // get cart de local storage
-finalCartObject = JSON.parse(localStorageCart)
+    let localStorageCart = localStorage.getItem("cart"); // get cart de local storage
+    finalCartObject = JSON.parse(localStorageCart)
 finalCartObject.forEach(product => {
     const foundProduct = data.find(p => p._id === product.id);
     if(foundProduct) {
@@ -52,7 +58,7 @@ finalCartObject.forEach(product => {
     return finalCartObject;
 }
 
-
+// génére l'affichage ce chaque produit du panier dans la page panier.
 function displayCart() {
     finalCartObject.forEach(product => {
         toCartItem.innerHTML += 
@@ -82,9 +88,8 @@ function displayCart() {
 
 let cart = new Cart;
 
-
-
-// appeler new cart ?
+// gére la suppresion d'un article en récupérant son id et sa couleur
+// appelle la fonction cart.remove afin de supprimer la ligne du local storage et recharger la page pour actualiser l'affichage
 function deleteItem() {
          const toDeleteItem = document.querySelectorAll(".cart__item .deleteItem");
          toDeleteItem.forEach((toDeleteItem) => {
@@ -97,6 +102,8 @@ function deleteItem() {
      })
      };
 
+// gére la modification de la quantité d'un produit en récupérant l'id, couleur et nouvelle quantité
+// puis appelle cart.changeQuantity afin d'éditer la quantité dans le local storage et dans l'objet finalCartObject
 function itemQuantity() {
     const toItemQuantity = document.querySelectorAll(".cart__item .itemQuantity");
     toItemQuantity.forEach((toItemQuantity) => {
@@ -110,17 +117,18 @@ function itemQuantity() {
 })
 };
 
-
+// insére le nombre total de produit dans le HTML
 function totalItems() {
     toTotalQuantity.innerHTML = cart.getTotalProduct();
 }
 
+// insére le montant total de la commande dans le HTML
 function totalPrice() {
-    toTotalPrice.innerHTML = cart.getTotalPrice();
+    toTotalPrice.innerHTML = cart.getTotalPrice(finalCartObject);
 }
 
 
-// tout en un
+// défini les différentes Regex qui seront à prendre en compte suivant le type de champ du formulaire
 function validateRegex(value, type) {
     if(type === "text") {
         const minRegexp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
@@ -137,11 +145,11 @@ function validateRegex(value, type) {
     }
 }
 
-// défini les infos de contact globales qui seront importés plus tard dans le local storage
+// défini les infos de contact globales qui seront nécessaire à l'envoi de la commande à l'API
 let globalContact = {firstName: "", lastName: "", address: "", city: "", email: ""};
 
 
-// liste des messages d'erreurs
+// liste des messages d'erreurs à insérer dans le HTML en cas d'erreur de Regex
 let textError = false;
 const textErrorOutput = "Seules les lettres et tirets sont autorisés."
 let addressError = false;
@@ -152,12 +160,16 @@ const noErrorToDisplay = null;
 // rajouter erreur par champs : ex: prenom incorrect, nom de famille incorrect
 
 
-
+// défini les champs du formulaire
 const formFields = [firstName, lastName, address, city, email]
+// défini le type de Regex à utiliser, suivant le type de champ du formulaire
 const fieldType = ["text", "text", "address", "text", "email"]
+// défini le nombre d'erreurs constatés afin de pouvoir valider ou non la commande
 let errorCount = [];
 
-
+// pour chaque element de FormFields on vérifie la correspondance à la Regex attribué par le filedType
+// on envoi alors les valeurs formFields, Fieldtype et errorValue à la fonction définissant les messsages d'erreurs
+// le données du formFields définissent la key pour l'objet globalContact, ainsi que l'emplacement querySelector pour le displayError
 function formValidation() {
 for (let i = 0; i < formFields.length; i++) {
     let errorValue = false
@@ -178,7 +190,7 @@ for (let i = 0; i < formFields.length; i++) {
 }
 
 
-// défini si on affiche ou non un message d'erreur
+// défini si on affiche ou non un message d'erreur en fonction de la valeur d'errorValue
 function displayError(queryLocation, errorKind, errorValue){
     let errorOnDisplay;
     if(errorValue === true){
@@ -199,12 +211,16 @@ function displayError(queryLocation, errorKind, errorValue){
 
 let finalCartArray = [];
 
+// converti l'objet finalCart vers un array finalCart sous le format attendu par l'API. Seulement les ID.
 function cartConvertToArray(object, array) {
 object.forEach(item => {
     array.push(item.id)
 });}
 
-
+// vérifie que toutes les conditions nécessaires sont remplies avant de passer la commande.
+// il faut entre autre un errorCount égale à zéro (et donc des données à jour)
+// un globalContact ayant tous les champs renseignés
+// un panier non vide
 toOrder.addEventListener("click", function(){
     console.log("errorCount", errorCount);
     console.log("globalContact", globalContact)
@@ -229,8 +245,7 @@ toOrder.addEventListener("click", function(){
 })
 
 
-///////
-
+// Envoi la commande à l'API sous le format attendu
 function sendOrder() {
 const orderData = {
     contact: globalContact,

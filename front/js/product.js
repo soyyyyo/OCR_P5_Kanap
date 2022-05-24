@@ -36,7 +36,6 @@ let id = pageId;
 let color = "";
 let quantity = 0;
 let cart = new Cart;
-let price = 0;
 
 displayProducts = (products) => { // affichage du produit en fonction de son ID
     for(let product of products) {
@@ -49,24 +48,9 @@ displayProducts = (products) => { // affichage du produit en fonction de son ID
         for(let i = 0; i < product.colors.length; i++) { // tant qu'il y a des couleurs, on les rajoute
         toColor.innerHTML += `<option value="${product.colors[i]}">${product.colors[i]}</option>;`
         }
-        price = product.price
         }
     }
 }
-
-// supprimer le local storage
-// localStorage.clear();
-// valable uniquement pendant les phases de test
-
-
-
-// let basket = new Basket()
-// basket.addBasket({id:"25", price: 19, })
-// basket.removeFromBasket ==> renommer en "remove" etc
-
-
-
-// let cart = new Cart;
 
 // surveille les changements de valeur de la couleur du produit
 document
@@ -89,5 +73,5 @@ document
 if(color === null || color === "" || quantity === 0 || quantity > 100){
     alert("Veuillez choisir une couleur et une quantité valide.");
 } else
-cart.add({id, color, quantity, price});
+cart.add({id, color, quantity});
 })
