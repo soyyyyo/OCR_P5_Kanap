@@ -70,7 +70,7 @@ function displayCart() {
     <div class="cart__item__content__description">
         <h2>${product.name}</h2>
         <p>${product.color}</p>
-        <p>${product.price}</p>
+        <p>${product.price} €</p>
     </div>
     <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
@@ -282,6 +282,7 @@ toOrder.addEventListener("click", function(){
     } else {
         event.preventDefault();
         console.log("SOMETHING WENT WRONG")
+        alert("Veuillez vérifier les informations saisies")
     }
     cartConvertToArray(finalCartObject, finalCartArray);
     console.log(finalCartArray);

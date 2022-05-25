@@ -72,6 +72,10 @@ document
 // informe l'utilisateur des conditions à respecter pour valider le panier
 if(color === null || color === "" || quantity === 0 || quantity > 100){
     alert("Veuillez choisir une couleur et une quantité valide.");
-} else
+} else {
 cart.add({id, color, quantity});
+alert("Votre article a bien été ajouté au panier&");
+}
+
 })
+
