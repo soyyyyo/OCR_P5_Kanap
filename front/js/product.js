@@ -1,4 +1,7 @@
-fetch("http://localhost:3000/api/products")
+fetchApi();
+
+async function fetchApi() {
+await fetch("http://localhost:3000/api/products")
   .then((rawData) => rawData.json()) // converti les data pour être lus
   .then((okData) => {
     displayProducts(okData); // appel la fonction d'affichage du produit de la page
@@ -8,6 +11,7 @@ fetch("http://localhost:3000/api/products")
 document.querySelector(".item").innerHTML += "<h1>erreur 404</h1>";
 console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
 });
+}
 
 // récupére l'ID via l'URL de la page
 const thisPage = window.location.href
@@ -31,7 +35,7 @@ const toColor = document.querySelector("#colors")
 const toQuantity = document.querySelector("#quantity")
 const toAddToCart = document.querySelector("#addToCart")
 
-// défini les variables qui seront ajoutés au panier
+// défini les variables qui seront ajoutés au panier du local storage
 let id = pageId;
 let color = "";
 let quantity = 0;
@@ -74,7 +78,7 @@ if(color === null || color === "" || quantity === 0 || quantity > 100){
     alert("Veuillez choisir une couleur et une quantité valide.");
 } else {
 cart.add({id, color, quantity});
-alert("Votre article a bien été ajouté au panier&");
+alert("Votre article a bien été ajouté au panier");
 }
 
 })

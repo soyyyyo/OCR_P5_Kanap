@@ -1,4 +1,7 @@
-fetch("http://localhost:3000/api/products")
+fetchApi();
+
+async function fetchApi() {
+await fetch("http://localhost:3000/api/products")
   .then((rawData) => rawData.json()) // converti les data pour être lus
   .then((okData) => {
     kanapIndex(okData);
@@ -8,6 +11,7 @@ fetch("http://localhost:3000/api/products")
 document.querySelector(".titles").innerHTML += "<h1>erreur 404</h1>";
 console.log("erreur 404 via API: " + err);
 })
+}
 
 kanapIndex = (data) => {
   let toItems = document.querySelector(".items"); // défini où inclure les data
@@ -21,3 +25,5 @@ kanapIndex = (data) => {
 </a>`
   }
 }
+
+//

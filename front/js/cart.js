@@ -1,12 +1,14 @@
 // sauvegardera le fetch des datas de l'API pour ne pas la rappeler à chaque modifications du panier.
 let fetchedData;
+fetchApi();
 
-fetch("http://localhost:3000/api/products")
+
+async function fetchApi() {
+await fetch("http://localhost:3000/api/products")
   .then((rawData) => rawData.json()) // converti les data pour être lus
   .then((okData) => {
-    fetchedData = okData
-    // displayProducts(okData); // appel la fonction d'affichage du produit de la page
     console.table(okData);
+    fetchedData = okData
     detailsOfCart(okData);
     displayCart();
     deleteItem();
@@ -14,13 +16,12 @@ fetch("http://localhost:3000/api/products")
     totalItems();
     totalPrice();
     formValidation();
-    // console.table(okData); // affiche les data dans la console sous forme de tableau
   })
   .catch((err) => {
 document.querySelector("#cart__items").innerHTML += "<h1>erreur 404</h1>";
 console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
 });
-
+}
 
 // définition des points d'entrées dans le HTML
 // cartes produits, quantité total, et prix total
@@ -229,28 +230,7 @@ function displayError(queryLocation, errorKind, errorValue){
         document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
     }
     }
-    
-    // version fonctionnelle 3 messaes d'erreurs seulement
-/*
-// défini si on affiche ou non un message d'erreur en fonction de la valeur d'errorValue
-function displayError(queryLocation, errorKind, errorValue){
-    let errorOnDisplay;
-    if(errorValue === true){
-        if(errorKind === "text") {
-            errorOnDisplay = textErrorOutput;
-        }
-        if(errorKind === "address") {
-            errorOnDisplay = addressErrorOutput;
-        }
-        if(errorKind === "email") {
-            errorOnDisplay = emailErrorOutput;
-        }
-        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = errorOnDisplay;
-    } else {
-        document.querySelector("#"+queryLocation+"ErrorMsg").innerHTML = noErrorToDisplay;
-    }
-    }
-*/
+
 
 let finalCartArray = [];
 
@@ -352,3 +332,8 @@ toFirstName.addEventListener("change", function(e) {
    displayError("firstName", textErrorOutput, errorValue);
 })
 */
+
+
+
+
+// mettre les variables tout en haut pour plus de lisibilité
