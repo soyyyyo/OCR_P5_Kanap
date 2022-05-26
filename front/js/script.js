@@ -1,5 +1,8 @@
 fetchApi();
 
+/**
+ * Récupéres les datas brutes de l'API
+ */
 async function fetchApi() {
 await fetch("http://localhost:3000/api/products")
   .then((rawData) => rawData.json()) // converti les data pour être lus
@@ -13,6 +16,11 @@ console.log("erreur 404 via API: " + err);
 })
 }
 
+
+/**
+ * Raises a number to exponent
+ * @param {table} data - l'objet data sous format .json
+ */
 kanapIndex = (data) => {
   let toItems = document.querySelector(".items"); // défini où inclure les data
   for (let article of data) { // chaque ligne est intérpréter
@@ -25,5 +33,9 @@ kanapIndex = (data) => {
 </a>`
   }
 }
+
+
+
+
 
 //
