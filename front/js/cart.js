@@ -61,6 +61,24 @@ finalCartObject.forEach(product => {
 
 // génére l'affichage ce chaque produit du panier dans la page panier.
 function displayCart() {
+    // si il n'y a rien dans le panier, on crée une div d'information le précisant, et un lien vers la page d'accueil
+    if(finalCartObject.length === 0) {
+        const newLink = document.createElement("a")
+        newLink.setAttribute("href", "./index.html")
+        newLink.style.textDecoration = "none";
+        newLink.style.color = "var(--text-color)"
+        const linkText = document.createTextNode(" Voir les canapés")
+        newLink.appendChild(linkText)
+
+        const newDiv = document.createElement("div");
+        const newContent = document.createTextNode('Le panier est vide!');
+        newDiv.style.textAlign = "center";
+        newDiv.appendChild(newContent);
+        newDiv.appendChild(newLink)
+
+        toCartItem.appendChild(newDiv)
+    // si le panier contient des élements, on les affiches dynamiquement
+    } else {
     finalCartObject.forEach(product => {
         toCartItem.innerHTML += 
         `<article class="cart__item" data-id=${product.id} data-color=${product.color}>
@@ -85,7 +103,7 @@ function displayCart() {
     </div>
 </article>`
     });
-}
+    }}
 
 let cart = new Cart;
 
