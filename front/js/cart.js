@@ -2,6 +2,9 @@
 let fetchedData;
 fetchApi();
 
+
+
+
 // récupére les produits de l'API et appel les différentes fonctions utiles à la page
 async function fetchApi() {
 await fetch("http://localhost:3000/api/products")
@@ -23,6 +26,9 @@ console.log("erreur 404 via API: " + err); // définition de l'erreur dans la co
 });
 }
 
+
+
+
 /////////////////////
 // AFFICHAGE ET MODIFICATIONS DU PANIER
 /////////////////////
@@ -40,13 +46,22 @@ const city = document.querySelector("#city")
 const email = document.querySelector("#email")
 // bouton de validation de la commande
 const toOrder = document.querySelector("#order")
+// panier final sous forme d'objet
+let finalCartObject = [];
+
+
 
 
 // on récupére les détails de chaque produit dans une variable objet finalCartObject
 function detailsOfCart(data) {
-    let localStorageCart = localStorage.getItem("cart"); // get cart de local storage
+    let localStorageCart;
+    // si le local storage est null (aprés un clear storage) on le défini afin d'éviter des bugs
+    if(localStorage.getItem("cart") === null) {
+        localStorageCart = []
+    } else {
+    localStorageCart = localStorage.getItem("cart"); // get cart de local storage
     finalCartObject = JSON.parse(localStorageCart)
-finalCartObject.forEach(product => {
+    finalCartObject.forEach(product => {
     const foundProduct = data.find(p => p._id === product.id);
     if(foundProduct) {
         product.name = foundProduct.name;
@@ -60,26 +75,35 @@ finalCartObject.forEach(product => {
 });
     console.log("final cart", finalCartObject);
     return finalCartObject;
+}}
+
+
+
+
+function noCartToDisplay() {
+    const newLink = document.createElement("a")
+    newLink.setAttribute("href", "./index.html")
+    newLink.style.textDecoration = "none";
+    newLink.style.color = "var(--text-color)"
+    const linkText = document.createTextNode(" Voir les canapés")
+    newLink.appendChild(linkText)
+
+    const newDiv = document.createElement("div");
+    const newContent = document.createTextNode('Le panier est vide!');
+    newDiv.style.textAlign = "center";
+    newDiv.appendChild(newContent);
+    newDiv.appendChild(newLink)
+
+    toCartItem.appendChild(newDiv)
 }
+
+
 
 // génére l'affichage ce chaque produit du panier dans la page panier.
 function displayCart() {
     // si il n'y a rien dans le panier, on crée une div d'information le précisant, et un lien vers la page d'accueil
     if(finalCartObject.length === 0) {
-        const newLink = document.createElement("a")
-        newLink.setAttribute("href", "./index.html")
-        newLink.style.textDecoration = "none";
-        newLink.style.color = "var(--text-color)"
-        const linkText = document.createTextNode(" Voir les canapés")
-        newLink.appendChild(linkText)
-
-        const newDiv = document.createElement("div");
-        const newContent = document.createTextNode('Le panier est vide!');
-        newDiv.style.textAlign = "center";
-        newDiv.appendChild(newContent);
-        newDiv.appendChild(newLink)
-
-        toCartItem.appendChild(newDiv)
+    noCartToDisplay()
     // si le panier contient des élements, on les affiches dynamiquement
     } else {
     finalCartObject.forEach(product => {
@@ -108,7 +132,13 @@ function displayCart() {
     });
     }}
 
+
+
+
 let cart = new Cart;
+
+
+
 
 // gére la suppresion d'un article en récupérant son id et sa couleur
 // appelle la fonction cart.remove afin de supprimer la ligne du local storage et recharger la page pour actualiser l'affichage
@@ -123,6 +153,9 @@ function deleteItem() {
              })
      })
      };
+
+
+
 
 // gére la modification de la quantité d'un produit en récupérant l'id, couleur et nouvelle quantité
 // puis appelle cart.changeQuantity afin d'éditer la quantité dans le local storage et dans l'objet finalCartObject
@@ -139,6 +172,9 @@ function itemQuantity() {
 })
 };
 
+
+
+
 // insére le nombre total de produit dans le HTML
 function totalItems() {
     toTotalQuantity.innerHTML = cart.getTotalProduct();
@@ -148,6 +184,9 @@ function totalItems() {
 function totalPrice() {
     toTotalPrice.innerHTML = cart.getTotalPrice(finalCartObject);
 }
+
+
+
 
 /////////////////////
 // VALIDATION DU FORMULAIRE
@@ -173,16 +212,20 @@ function validateRegex(value, type) {
     }
 }
 
+
+
+
 // défini les infos de contact globales qui seront nécessaire à l'envoi de la commande à l'API
 let globalContact = {firstName: "", lastName: "", address: "", city: "", email: ""};
-
-
 // défini les champs du formulaire
 const formFields = [firstName, lastName, address, city, email]
 // défini le type de Regex à utiliser, suivant le type de champ du formulaire
 const fieldType = ["text", "text", "address", "text", "email"]
 // défini le nombre d'erreurs constatés afin de pouvoir valider ou non la commande
 let errorCount = [];
+
+
+
 
 // pour chaque element de FormFields on vérifie la correspondance à la Regex attribué par le filedType
 // on envoi alors les valeurs formFields, Fieldtype et errorValue à la fonction définissant les messsages d'erreurs
@@ -206,6 +249,9 @@ for (let i = 0; i < formFields.length; i++) {
 }
 }
 
+
+
+
 // liste des messages d'erreurs à insérer dans le HTML en cas d'erreur de Regex
 let textError = false;
 const textErrorOutput = "Seules les lettres et tirets sont autorisés."
@@ -215,6 +261,8 @@ let emailError = false;
 const emailErrorOutput = "Veuillez rentrer une addresse email valide."
 const noErrorToDisplay = null;
 // rajouter erreur par champs : ex: prenom incorrect, nom de famille incorrect
+
+
 
 
 // défini si on affiche ou non un message d'erreur en fonction de la valeur d'errorValue
@@ -256,13 +304,21 @@ function displayError(queryLocation, errorKind, errorValue){
     }
 
 
+
+
 let finalCartArray = [];
+
+
+
 
 // converti l'objet finalCart vers un array finalCart sous le format attendu par l'API. Seulement les ID.
 function cartConvertToArray(object, array) {
 object.forEach(item => {
     array.push(item.id)
 });}
+
+
+
 
 // vérifie que toutes les conditions nécessaires sont remplies avant de passer la commande.
 // il faut entre autre un errorCount égale à zéro (et donc des données à jour)
@@ -292,6 +348,9 @@ toOrder.addEventListener("click", function(){
     console.log(finalCartArray);
 })
 
+
+
+
 /////////////////////
 // ENVOI DU FORMULAIRE
 /////////////////////
@@ -304,6 +363,9 @@ const orderData = {
     products: finalCartArray
 }
 
+
+
+
 // Envoi de l'objet orderData à l'API
 const sendOrder = {
     method: "POST",
@@ -313,6 +375,9 @@ const sendOrder = {
     },
     body: JSON.stringify(orderData)
 };
+
+
+
 
 fetch("http://localhost:3000/api/products/order", sendOrder)
 .then(
