@@ -31,7 +31,7 @@ class Cart {
         }
         this.save();
     }
-
+    // supprime un objet du local storage en vérifiant l'id et la couleur
          remove(idInObject, colorInObject){
                  const foundProduct = this.cart.find(
                      p => p.id === idInObject.id && p.color === colorInObject.color);
@@ -47,7 +47,7 @@ class Cart {
                  location.reload()
                 }
 
-    // change la quantité d'un produit
+    // change la quantité d'un produit en croisant son id et sa couleur
         changeQuantity(idInObject, colorInObject, quantityInObject) {
             const foundProduct = this.cart.find(
             p => p.id === idInObject.id && p.color === colorInObject.color);
@@ -58,6 +58,7 @@ class Cart {
             } else {
             this.save();
         }
+        // met à jour l'affichage de la page et le montant total de la commande
         detailsOfCart(fetchedData)
         totalPrice();
         }
@@ -77,13 +78,5 @@ class Cart {
             total += product.quantity * product.price;
         } 
         return total;
-
-/*
-        let total = 0;
-        for(let product of this.cart){
-            total += product.quantity * product.price;
-        } 
-        return total;
-*/
     }
 }

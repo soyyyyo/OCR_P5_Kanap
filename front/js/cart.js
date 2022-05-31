@@ -2,7 +2,7 @@
 let fetchedData;
 fetchApi();
 
-
+// récupére les produits de l'API et appel les différentes fonctions utiles à la page
 async function fetchApi() {
 await fetch("http://localhost:3000/api/products")
   .then((rawData) => rawData.json()) // converti les data pour être lus
@@ -23,6 +23,10 @@ console.log("erreur 404 via API: " + err); // définition de l'erreur dans la co
 });
 }
 
+/////////////////////
+// AFFICHAGE ET MODIFICATIONS DU PANIER
+/////////////////////
+
 // définition des points d'entrées dans le HTML
 // cartes produits, quantité total, et prix total
 const toCartItem = document.querySelector("#cart__items");
@@ -36,7 +40,6 @@ const city = document.querySelector("#city")
 const email = document.querySelector("#email")
 // bouton de validation de la commande
 const toOrder = document.querySelector("#order")
-
 
 
 // on récupére les détails de chaque produit dans une variable objet finalCartObject
@@ -146,6 +149,9 @@ function totalPrice() {
     toTotalPrice.innerHTML = cart.getTotalPrice(finalCartObject);
 }
 
+/////////////////////
+// VALIDATION DU FORMULAIRE
+/////////////////////
 
 // défini les différentes Regex qui seront à prendre en compte suivant le type de champ du formulaire
 function validateRegex(value, type) {
@@ -286,6 +292,10 @@ toOrder.addEventListener("click", function(){
     console.log(finalCartArray);
 })
 
+/////////////////////
+// ENVOI DU FORMULAIRE
+/////////////////////
+
 
 // Envoi la commande à l'API sous le format attendu
 function sendOrder() {
@@ -322,36 +332,3 @@ fetch("http://localhost:3000/api/products/order", sendOrder)
     }
 )
 }
-
-
-
-
-
-/*
-
-
-*/
-
-
-
-
-// essayer avec [0] [1]
-
-
-/*
-toFirstName.addEventListener("change", function(e) {
-    let errorValue = false
-   if(validateRegex(e.target.value, "text")){
-    globalContact.firstName = e.target.value;
-    errorValue = false
-   } else {
-    errorValue = true;
-   }
-   displayError("firstName", textErrorOutput, errorValue);
-})
-*/
-
-
-
-
-// mettre les variables tout en haut pour plus de lisibilité

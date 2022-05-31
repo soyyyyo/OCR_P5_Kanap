@@ -1,4 +1,4 @@
-////
+// variable stockant l'ID de la page, et donc du produit en question
 let pageId = getSearchParam();
 
 // Get search param
@@ -12,6 +12,7 @@ function getSearchParam() {
 
 fetchApi();
 
+// appel de l'API pour le produit de la page via l'URL
 async function fetchApi() {
 await fetch(`http://localhost:3000/api/products/${pageId}`)
   .then((rawData) => rawData.json()) // converti les data pour être lus
@@ -41,6 +42,7 @@ let color = "";
 let quantity = 0;
 let cart = new Cart;
 
+// défini l'affichage des produits dans la page
 displayProducts = (product) => {
             toPageTitle.innerText = product.name;
             toDescription.innerText = product.description;
@@ -75,10 +77,7 @@ document
 
     
 
-/**
- * Défini l'action à effectuer lors de l'ajout au panier
- */
-
+// défini l'action à effectuer lors de l'ajout d'un produit au panier
 document
 .querySelector("#addToCart")
 .addEventListener("click", function() {
@@ -89,6 +88,5 @@ if(color === null || color === "" || quantity === 0 || quantity > 100){
 cart.add({id, color, quantity});
 alert("Votre article a bien été ajouté au panier");
 }
-
 })
 
