@@ -149,13 +149,19 @@ function deleteItem() {
                  let producToDelete = toDeleteItem.closest(".cart__item");
                  let produtToDeleteId = producToDelete.dataset.id;
                  let productToDeleteColor = producToDelete.dataset.color
-                cart.remove({id: produtToDeleteId}, {color: productToDeleteColor})    
+                cart.remove({id: produtToDeleteId}, {color: productToDeleteColor})
+                producToDelete.remove();
+                updateCart();
              })
      })
      };
 
 
-
+function updateCart() {
+    detailsOfCart();
+    totalItems();
+    totalPrice();
+}
 
 // gére la modification de la quantité d'un produit en récupérant l'id, couleur et nouvelle quantité
 // puis appelle cart.changeQuantity afin d'éditer la quantité dans le local storage et dans l'objet finalCartObject
@@ -167,7 +173,8 @@ function itemQuantity() {
             let productToModifyId = productToModify.dataset.id;
             let productToModifyColor = productToModify.dataset.color
             let productToModifyQuantity = e.target.value
-            cart.changeQuantity({id: productToModifyId}, {color: productToModifyColor}, {quantity: productToModifyQuantity})    
+            cart.changeQuantity({id: productToModifyId}, {color: productToModifyColor}, {quantity: productToModifyQuantity})
+            updateCart();
         })
 })
 };
@@ -253,11 +260,8 @@ for (let i = 0; i < formFields.length; i++) {
 
 
 // liste des messages d'erreurs à insérer dans le HTML en cas d'erreur de Regex
-let textError = false;
 const textErrorOutput = "Seules les lettres et tirets sont autorisés."
-let addressError = false;
 const addressErrorOutput = "Votre addresse semble incompléte ou invalide"
-let emailError = false;
 const emailErrorOutput = "Veuillez rentrer une addresse email valide."
 const noErrorToDisplay = null;
 // rajouter erreur par champs : ex: prenom incorrect, nom de famille incorrect
@@ -305,7 +309,7 @@ function displayError(queryLocation, errorKind, errorValue){
 
 
 
-
+// le panier sous forme d'array, qui sera envoyé à l'API
 let finalCartArray = [];
 
 

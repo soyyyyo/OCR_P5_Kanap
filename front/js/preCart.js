@@ -40,11 +40,11 @@ class Cart {
                      foundProduct.delete = true;
                      this.cart = this.cart.filter(p => p.delete != true);
                  } else {
-                     console.log("remove function isnt workin properly")
+                     console.log("remove function isnt working properly")
                  }
                  // on sauvegarde le nouveau local storage, et actualise la page pour rafraichir le display product
                  this.save();
-                 location.reload()
+                 //location.reload()
                 }
 
     // change la quantité d'un produit en croisant son id et sa couleur
@@ -60,7 +60,6 @@ class Cart {
         }
         // met à jour l'affichage de la page et le montant total de la commande
         detailsOfCart(fetchedData)
-        totalPrice();
         }
     }
         // calcule le nombre de produit dans le panier depuis le local storage

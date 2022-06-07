@@ -1,11 +1,11 @@
 // variable stockant l'ID de la page, et donc du produit en question
-let pageId = getSearchParam();
+let pageId = getSearchParam("id");
 
 // Get search param
-function getSearchParam() {
+function getSearchParam(param) {
 	const searchParam = new URLSearchParams(document.location.search);
-	if (searchParam.has("id")) {
-		return searchParam.get("id");
+	if (searchParam.has(param)) {
+		return searchParam.get(param);
 	}
 	return "";
 }
@@ -47,7 +47,6 @@ displayProducts = (product) => {
             toPageTitle.innerText = product.name;
             toDescription.innerText = product.description;
             toTitle.innerText = product.name;
-            //toImage.innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}"></img>`;
 
             const itemImgContainer = document.querySelector(".item__img");
             const imgElement = document.createElement("img");
