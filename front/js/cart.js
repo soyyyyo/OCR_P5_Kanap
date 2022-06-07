@@ -1,10 +1,12 @@
 // sauvegardera le fetch des datas de l'API pour ne pas la rappeler à chaque modifications du panier.
-let fetchedData;
-fetchApi();
+// let fetchedData;
+let finalCartObject = [];
+
+//fetchApi();
+//fetchApiDetails();
 
 
-
-
+/*
 // récupére les produits de l'API et appel les différentes fonctions utiles à la page
 async function fetchApi() {
 await fetch("http://localhost:3000/api/products")
@@ -25,8 +27,44 @@ document.querySelector("#cart__items").innerHTML += "<h1>erreur 404</h1>";
 console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
 });
 }
+*/
 
 
+fetchApiDetails();
+
+function launchFunctions() {
+    displayCart();
+    deleteItem();
+    itemQuantity();
+    totalItems();
+    totalPrice();
+    formValidation();
+    console.log("dernier machin");
+}
+
+
+async function fetchApiDetails() {
+    let localStorageCart;
+    localStorageCart = localStorage.getItem("cart"); // get cart de local storage
+    finalCartObject = JSON.parse(localStorageCart)
+    await finalCartObject.forEach(product => {
+        fetch(`http://localhost:3000/api/products/${product.id}`)
+        .then((rawData) => rawData.json())
+        .then((okData) => {
+            product.name = okData.name;
+            product.price = okData.price;
+            product.imageUrl = okData.imageUrl;
+            product.description = okData.description;
+            product.altTxt = okData.altTxt;
+            console.log("prout");
+        })
+        .catch((err) => {
+            document.querySelector("#cart__items").innerHTML += "<h1>erreur 404</h1>";
+            console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
+            });
+})
+console.log("final cart is", finalCartObject);
+}
 
 
 /////////////////////
@@ -47,11 +85,10 @@ const email = document.querySelector("#email")
 // bouton de validation de la commande
 const toOrder = document.querySelector("#order")
 // panier final sous forme d'objet
-let finalCartObject = [];
 
 
 
-
+/*
 // on récupére les détails de chaque produit dans une variable objet finalCartObject
 function detailsOfCart(data) {
     let localStorageCart;
@@ -76,6 +113,7 @@ function detailsOfCart(data) {
     console.log("final cart", finalCartObject);
     return finalCartObject;
 }}
+*/
 
 
 
@@ -133,11 +171,7 @@ function displayCart() {
     }}
 
 
-
-
 let cart = new Cart;
-
-
 
 
 // gére la suppresion d'un article en récupérant son id et sa couleur
@@ -158,7 +192,7 @@ function deleteItem() {
 
 
 function updateCart() {
-    detailsOfCart();
+    fetchApiDetails();
     totalItems();
     totalPrice();
 }

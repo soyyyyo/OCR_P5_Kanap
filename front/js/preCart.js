@@ -59,7 +59,7 @@ class Cart {
             this.save();
         }
         // met à jour l'affichage de la page et le montant total de la commande
-        detailsOfCart(fetchedData)
+        // detailsOfCart(fetchedData)
         }
     }
         // calcule le nombre de produit dans le panier depuis le local storage
