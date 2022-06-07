@@ -30,18 +30,24 @@ console.log("erreur 404 via API: " + err); // définition de l'erreur dans la co
 */
 
 
-fetchApiDetails();
+trying();
 
-function launchFunctions() {
+async function trying() {
+    await fetchApiDetails();
+    launchFunctions();
+}
+
+
+
+async function launchFunctions() {
     displayCart();
     deleteItem();
     itemQuantity();
     totalItems();
     totalPrice();
     formValidation();
-    console.log("dernier machin");
+    console.log("3 - FIN LAUNCHFUNCTION")
 }
-
 
 async function fetchApiDetails() {
     let localStorageCart;
@@ -56,14 +62,14 @@ async function fetchApiDetails() {
             product.imageUrl = okData.imageUrl;
             product.description = okData.description;
             product.altTxt = okData.altTxt;
-            console.log("prout");
+            console.log(" 1 - FIN DE LA LOOP INTERNE FETCHAPI")
         })
         .catch((err) => {
             document.querySelector("#cart__items").innerHTML += "<h1>erreur 404</h1>";
             console.log("erreur 404 via API: " + err); // définition de l'erreur dans la console
             });
 })
-console.log("final cart is", finalCartObject);
+console.log("2 - FIN DE FETCHAPI")
 }
 
 
