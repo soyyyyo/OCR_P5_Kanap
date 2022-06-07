@@ -2,6 +2,22 @@
 // let fetchedData;
 let finalCartObject = [];
 
+// définition des points d'entrées dans le HTML
+// cartes produits, quantité total, et prix total
+const toCartItem = document.querySelector("#cart__items");
+const toTotalQuantity = document.querySelector("#totalQuantity");
+const toTotalPrice = document.querySelector("#totalPrice");
+// champs du formulaire
+const firstName = document.querySelector("#firstName")
+const lastName = document.querySelector("#lastName")
+const address = document.querySelector("#address")
+const city = document.querySelector("#city")
+const email = document.querySelector("#email")
+// bouton de validation de la commande
+const toOrder = document.querySelector("#order")
+// panier final sous forme d'objet
+
+
 //fetchApi();
 //fetchApiDetails();
 
@@ -38,9 +54,8 @@ async function trying() {
 }
 
 
-
 async function launchFunctions() {
-    displayCart();
+    displayCart(finalCartObject);
     deleteItem();
     itemQuantity();
     totalItems();
@@ -48,6 +63,7 @@ async function launchFunctions() {
     formValidation();
     console.log("3 - FIN LAUNCHFUNCTION")
 }
+
 
 async function fetchApiDetails() {
     let localStorageCart;
@@ -76,22 +92,6 @@ console.log("2 - FIN DE FETCHAPI")
 /////////////////////
 // AFFICHAGE ET MODIFICATIONS DU PANIER
 /////////////////////
-
-// définition des points d'entrées dans le HTML
-// cartes produits, quantité total, et prix total
-const toCartItem = document.querySelector("#cart__items");
-const toTotalQuantity = document.querySelector("#totalQuantity");
-const toTotalPrice = document.querySelector("#totalPrice");
-// champs du formulaire
-const firstName = document.querySelector("#firstName")
-const lastName = document.querySelector("#lastName")
-const address = document.querySelector("#address")
-const city = document.querySelector("#city")
-const email = document.querySelector("#email")
-// bouton de validation de la commande
-const toOrder = document.querySelector("#order")
-// panier final sous forme d'objet
-
 
 
 /*
@@ -144,13 +144,13 @@ function noCartToDisplay() {
 
 
 // génére l'affichage ce chaque produit du panier dans la page panier.
-function displayCart() {
+function displayCart(pendingCart) {
     // si il n'y a rien dans le panier, on crée une div d'information le précisant, et un lien vers la page d'accueil
-    if(finalCartObject.length === 0) {
+    if(pendingCart.length === 0) {
     noCartToDisplay()
     // si le panier contient des élements, on les affiches dynamiquement
     } else {
-    finalCartObject.forEach(product => {
+        pendingCart.forEach(product => {
         toCartItem.innerHTML += 
         `<article class="cart__item" data-id=${product.id} data-color=${product.color}>
     <div class="cart__item__img">
