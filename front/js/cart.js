@@ -50,7 +50,6 @@ trying();
 
 async function trying() {
     await fetchApiDetails();
-    launchFunctions();
 }
 
 
