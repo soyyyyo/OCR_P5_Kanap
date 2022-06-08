@@ -158,9 +158,12 @@ function deleteItem() {
 
 
 function updateCart() {
-    detailsOfCart();
+    detailsOfCart(fetchedData);
     totalItems();
     totalPrice();
+    if(finalCartObject.length === 0) {
+        displayCart();
+    }
 }
 
 // gére la modification de la quantité d'un produit en récupérant l'id, couleur et nouvelle quantité
@@ -230,9 +233,6 @@ const formFields = [firstName, lastName, address, city, email]
 const fieldType = ["text", "text", "address", "text", "email"]
 // défini le nombre d'erreurs constatés afin de pouvoir valider ou non la commande
 let errorCount = [];
-
-
-
 
 // pour chaque element de FormFields on vérifie la correspondance à la Regex attribué par le filedType
 // on envoi alors les valeurs formFields, Fieldtype et errorValue à la fonction définissant les messsages d'erreurs
